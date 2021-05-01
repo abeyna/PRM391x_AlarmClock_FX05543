@@ -22,6 +22,7 @@ public class RingtoneService extends Service {
         mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_ALARM_ALERT_URI);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+
         return START_NOT_STICKY;
     }
 }
