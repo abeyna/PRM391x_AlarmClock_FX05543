@@ -12,5 +12,8 @@ public class AlertReceiver extends BroadcastReceiver {
         NotificationHelper notificationHelper = new NotificationHelper(context);
         NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
         notificationHelper.getManager().notify(1, nb.build());
+
+        Intent myIntent = new Intent(context, RingtoneService.class);
+        context.startService(myIntent);
     }
 }

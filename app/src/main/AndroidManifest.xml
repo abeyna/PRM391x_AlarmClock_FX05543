@@ -18,6 +18,8 @@
         </activity>
 
         <receiver android:name=".AlertReceiver"/>
+        <service android:name=".RingtoneService"
+            android:enabled="true"/>
     </application>
 
 </manifest>

@@ -14,16 +14,16 @@
 
     <Button
         android:id="@+id/main_activity_btn_schedule_alarm"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/btn_schedule_alarm"/>
+        android:text="@string/btn_set_alarm"/>
 
     <Button
         android:id="@+id/main_activity_btn_cancel_alarm"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="400dp"
-        android:text="Cancel Alarm"/>
+        android:text="@string/btn_cancel_alarm"/>
 </RelativeLayout>

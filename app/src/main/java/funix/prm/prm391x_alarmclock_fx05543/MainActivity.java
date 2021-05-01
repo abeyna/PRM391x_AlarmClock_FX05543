@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         mTvAlarm = (TextView) findViewById(R.id.main_activity_tv_alarm);
         mBtnSetAlarm = (Button) findViewById(R.id.main_activity_btn_schedule_alarm);
+        mBtnCancelAlarm = (Button) findViewById(R.id.main_activity_btn_cancel_alarm);
 
         mBtnSetAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             }
         });
 
-        mBtnCancelAlarm = (Button) findViewById(R.id.main_activity_btn_cancel_alarm);
         mBtnCancelAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,15 +68,13 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     private void startAlarm(Calendar c) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-        }
+        alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
     }
 
     private void cancelAlarm() {
