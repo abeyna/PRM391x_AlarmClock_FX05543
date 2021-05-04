@@ -1,90 +1,71 @@
 package funix.prm.prm391x_alarmclock_fx05543;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
-    private TextView mTvAlarm;
-    private Button mBtnSetAlarm;
-    private Button mBtnCancelAlarm;
+public class MainActivity extends AppCompatActivity {
+    private AlarmDatabase mAlarmDatabase;
+    private ListView mAlarmsListView;
+    private ArrayList<Alarm> mAlarmsList;
+    private AlarmAdapter mAlarmAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTvAlarm = (TextView) findViewById(R.id.main_activity_tv_alarm);
-        mBtnSetAlarm = (Button) findViewById(R.id.main_activity_btn_schedule_alarm);
-
-        mBtnSetAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment timePicker = new TimePickerFragment();
-                timePicker.show(getSupportFragmentManager(), "time picker");
-            }
-        });
-
-        mBtnCancelAlarm = (Button) findViewById(R.id.main_activity_btn_cancel_alarm);
-        mBtnCancelAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancelAlarm();
-            }
-        });
+        mAlarmsListView = (ListView) findViewById(R.id.activity_main_lv_alarm);
+        mAlarmsList = new ArrayList<>();
+        mAlarmAdapter = new AlarmAdapter(this, R.layout.item_alarm, mAlarmsList, mAlarmDatabase);
+        mAlarmsListView.setAdapter(mAlarmAdapter);
     }
 
     @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, 0);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_alarm, menu);
 
-        updateTimeText(c);
-        startAlarm(c);
+        return super.onCreateOptionsMenu(menu);
     }
 
-    private void updateTimeText(Calendar c) {
-        String timeText = "Alarm set for: ";
-        timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
-        mTvAlarm.setText(timeText);
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.add_alarm_btn) addAlarmDialog();
+        return super.onOptionsItemSelected(item);
     }
 
-    private void startAlarm(Calendar c) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+    private void addAlarmDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add_time_picker);
 
-        if (c.before(Calendar.getInstance())) {
-            c.add(Calendar.DATE, 1);
-        }
+        Button btnAddAlarm = (Button) findViewById(R.id.dialog_add_btn_add);
+        btnAddAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-        }
-    }
+            }
+        });
 
-    private void cancelAlarm() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-
-        alarmManager.cancel(pendingIntent);
-        mTvAlarm.setText("Alarm canceled");
+        dialog.show();
     }
 }
