@@ -15,8 +15,8 @@ public class AlarmDatabase extends SQLiteOpenHelper {
     private static final String MINUTE = "Minute";
     private static final String IS_SET = "IsSet";
 
-    public AlarmDatabase(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public AlarmDatabase(@Nullable Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
