@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlarmAdapter extends BaseAdapter {
-    private Context context;
+    private MainActivity context;
     private int layout;
     private List<Alarm> alarmsList;
 
-    public AlarmAdapter(Context context, int layout, List<Alarm> alarmsList) {
+    public AlarmAdapter(MainActivity context, int layout, List<Alarm> alarmsList) {
         this.context = context;
         this.layout = layout;
         this.alarmsList = alarmsList;
@@ -64,6 +64,13 @@ public class AlarmAdapter extends BaseAdapter {
 
         Alarm alarm = alarmsList.get(position);
         viewHolder.textAlarm.setText(alarm.getHour() + ":" + alarm.getMinute());
+
+        viewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.removeAlarm(alarm.getId());
+            }
+        });
 
         return convertView;
     }

@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -17,12 +19,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +46,15 @@ public class MainActivity extends AppCompatActivity {
         mAlarmsList = new ArrayList<>();
         mAlarmAdapter = new AlarmAdapter(this, R.layout.item_alarm, mAlarmsList);
         mAlarmsListView.setAdapter(mAlarmAdapter);
+
+        mAlarmsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, "ABV", Toast.LENGTH_SHORT).show();
+                editAlarm(position);
+                mAlarmAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -99,5 +112,46 @@ public class MainActivity extends AppCompatActivity {
             mAlarmsList.add(new Alarm(id, hour, minute, true));
         }
         mAlarmAdapter.notifyDataSetChanged();
+    }
+
+    public void editAlarm(int id) {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_edit_time_picker);
+        dialog.show();
+
+        TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.dialog_edit_time_picker);
+        int hour = timePicker.getCurrentHour();
+        int minute = timePicker.getCurrentMinute();
+
+        Button btnEditAlarm = (Button) dialog.findViewById(R.id.dialog_edit_btn_confirm);
+        btnEditAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAlarmDatabase.queryData("UPDATE Alarm SET hour = '"+hour+"', minute = '"+minute+"' WHERE id = '"+id+"'");
+                Toast.makeText(MainActivity.this, "Edited", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                getAlarmData();
+            }
+        });
+    }
+
+    public void removeAlarm(int id) {
+        AlertDialog.Builder removeDialog = new AlertDialog.Builder(this);
+        removeDialog.setMessage("Remove this alarm?");
+        removeDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mAlarmDatabase.queryData("DELETE FROM Alarm WHERE Id = '"+id+"'");
+                Toast.makeText(MainActivity.this, "Removed", Toast.LENGTH_SHORT).show();
+                getAlarmData();
+            }
+        });
+        removeDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        removeDialog.show();
     }
 }

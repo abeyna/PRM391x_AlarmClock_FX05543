@@ -45,6 +45,11 @@ public class AlarmDatabase extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void queryData(String sql) {
+        SQLiteDatabase database = getWritableDatabase();
+        database.execSQL(sql);
+    }
+
     public Cursor getData(String sql) {
         SQLiteDatabase database = getReadableDatabase();
         return database.rawQuery(sql, null);
