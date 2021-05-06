@@ -1,10 +1,14 @@
 package funix.prm.prm391x_alarmclock_fx05543;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
 
 public class AlarmDatabase extends SQLiteOpenHelper {
     private static final String DB_NAME = "AlarmDb.sqlite";
@@ -29,5 +33,20 @@ public class AlarmDatabase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALARM);
         onCreate(db);
+    }
+
+    public void addAlarmData(Alarm alarm) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(HOUR, alarm.getHour());
+        contentValues.put(MINUTE, alarm.getMinute());
+        contentValues.put(IS_SET, alarm.isSet());
+        db.insert(TABLE_ALARM, null, contentValues);
+        db.close();
+    }
+
+    public Cursor getData(String sql) {
+        SQLiteDatabase database = getReadableDatabase();
+        return database.rawQuery(sql, null);
     }
 }

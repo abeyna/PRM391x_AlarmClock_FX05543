@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -39,10 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
         mAlarmsListView = (ListView) findViewById(R.id.activity_main_lv_alarm);
         mAlarmsList = new ArrayList<>();
-        mAlarmAdapter = new AlarmAdapter(this, R.layout.item_alarm, mAlarmsList, mAlarmDatabase);
+        mAlarmAdapter = new AlarmAdapter(this, R.layout.item_alarm, mAlarmsList);
         mAlarmsListView.setAdapter(mAlarmAdapter);
-
-        mAlarmDatabase = new AlarmDatabase(this);
     }
 
     @Override
@@ -73,12 +72,32 @@ public class MainActivity extends AppCompatActivity {
 
                 int hour = timePicker.getCurrentHour();
                 int minute = timePicker.getCurrentMinute();
+                boolean status = true;
 
+                mAlarmDatabase = new AlarmDatabase(MainActivity.this);
+                Alarm alarm = new Alarm();
+                alarm.setHour(hour);
+                alarm.setMinute(minute);
+                alarm.setSet(status);
+                mAlarmDatabase.addAlarmData(alarm);
                 Toast.makeText(MainActivity.this, "Successfully", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                getAlarmData();
             }
         });
 
         dialog.show();
+    }
+
+    private void getAlarmData() {
+        Cursor cursor = mAlarmDatabase.getData("SELECT * FROM Alarm");
+        mAlarmsList.clear();
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            int hour = cursor.getInt(1);
+            int minute = cursor.getInt(2);
+            mAlarmsList.add(new Alarm(id, hour, minute, true));
+        }
+        mAlarmAdapter.notifyDataSetChanged();
     }
 }

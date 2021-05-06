@@ -16,13 +16,11 @@ public class AlarmAdapter extends BaseAdapter {
     private Context context;
     private int layout;
     private List<Alarm> alarmsList;
-    private AlarmDatabase alarmDatabase;
 
-    public AlarmAdapter(Context context, int layout, List<Alarm> alarmsList, AlarmDatabase alarmDatabase) {
+    public AlarmAdapter(Context context, int layout, List<Alarm> alarmsList) {
         this.context = context;
         this.layout = layout;
         this.alarmsList = alarmsList;
-        this.alarmDatabase = alarmDatabase;
     }
 
     @Override

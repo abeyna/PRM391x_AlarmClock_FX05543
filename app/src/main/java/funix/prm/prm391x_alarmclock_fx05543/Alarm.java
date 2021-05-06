@@ -6,6 +6,8 @@ public class Alarm {
     private int minute;
     private boolean isSet;
 
+    public Alarm() {}
+
     public Alarm(int id, int hour, int minute, boolean isSet) {
         this.id = id;
         this.hour = hour;
