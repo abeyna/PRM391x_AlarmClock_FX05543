@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,14 +59,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addAlarmDialog() {
-        Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_time_picker);
 
-        Button btnAddAlarm = (Button) findViewById(R.id.dialog_add_btn_add);
+        Calendar calendar = Calendar.getInstance();
+        TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.dialog_add_time_picker);
+        Button btnAddAlarm = (Button) dialog.findViewById(R.id.dialog_add_btn_add);
         btnAddAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+                calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
 
+                int hour = timePicker.getCurrentHour();
+                int minute = timePicker.getCurrentMinute();
+
+                Toast.makeText(MainActivity.this, "Successfully", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
 
