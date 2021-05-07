@@ -50,9 +50,7 @@ public class MainActivity extends AppCompatActivity {
         mAlarmsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "ABV", Toast.LENGTH_SHORT).show();
-                editAlarm(position);
-                mAlarmAdapter.notifyDataSetChanged();
+
             }
         });
     }
