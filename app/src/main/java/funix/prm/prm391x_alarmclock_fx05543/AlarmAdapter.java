@@ -1,11 +1,15 @@
 package funix.prm.prm391x_alarmclock_fx05543;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,12 +17,15 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AlarmAdapter extends BaseAdapter {
     private MainActivity context;
     private int layout;
     private List<Alarm> alarmsList;
+
+    private PendingIntent pendingIntent;
 
     public AlarmAdapter(MainActivity context, int layout, List<Alarm> alarmsList) {
         this.context = context;
@@ -52,6 +59,7 @@ public class AlarmAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder viewHolder;
+        Alarm alarm = alarmsList.get(position);
 
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -68,8 +76,30 @@ public class AlarmAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Alarm alarm = alarmsList.get(position);
-        viewHolder.textAlarm.setText(alarm.getHour() + ":" + alarm.getMinute());
+        if (alarm.getHour() < 10 && alarm.getMinute() > 10) {
+            viewHolder.textAlarm.setText("0" + alarm.getHour() + ":" + alarm.getMinute());
+        } else if (alarm.getHour() > 10 && alarm.getMinute() < 10) {
+            viewHolder.textAlarm.setText(alarm.getHour() + ": 0" + alarm.getMinute());
+        } else if(alarm.getHour() < 10 && alarm.getMinute() < 10) {
+            viewHolder.textAlarm.setText("0" + alarm.getHour() + ": 0" + alarm.getMinute());
+        } else {
+            viewHolder.textAlarm.setText(alarm.getHour() + ":" + alarm.getMinute());
+        }
+
+        Intent intent = new Intent(context, AlarmReceiver.class);
+
+        viewHolder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    Toast.makeText(context.getApplicationContext(), "Alarm is ON", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    Toast.makeText(context.getApplicationContext(), "Alarm is OFF", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         viewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +111,6 @@ public class AlarmAdapter extends BaseAdapter {
         viewHolder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "ABV", Toast.LENGTH_SHORT).show();
                 context.editAlarm(alarm.getId());
             }
         });

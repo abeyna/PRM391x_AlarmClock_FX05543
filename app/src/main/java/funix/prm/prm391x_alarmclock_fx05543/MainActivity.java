@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Alarm> mAlarmsList;
     private AlarmAdapter mAlarmAdapter;
 
+    private AlarmManager mAlarmManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,12 +49,8 @@ public class MainActivity extends AppCompatActivity {
         mAlarmAdapter = new AlarmAdapter(this, R.layout.item_alarm, mAlarmsList);
         mAlarmsListView.setAdapter(mAlarmAdapter);
 
-        mAlarmsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-            }
-        });
     }
 
     @Override
@@ -112,19 +110,30 @@ public class MainActivity extends AppCompatActivity {
         mAlarmAdapter.notifyDataSetChanged();
     }
 
+    public void setAlarm(TimePicker timePicker) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+        calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+
+    }
+
     public void editAlarm(int id) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_edit_time_picker);
         dialog.show();
 
+        Calendar calendar = Calendar.getInstance();
         TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.dialog_edit_time_picker);
-        int hour = timePicker.getCurrentHour();
-        int minute = timePicker.getCurrentMinute();
 
         Button btnEditAlarm = (Button) dialog.findViewById(R.id.dialog_edit_btn_confirm);
         btnEditAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+                calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+
+                int hour = timePicker.getCurrentHour();
+                int minute = timePicker.getCurrentMinute();
                 mAlarmDatabase.queryData("UPDATE Alarm SET hour = '"+hour+"', minute = '"+minute+"' WHERE id = '"+id+"'");
                 Toast.makeText(MainActivity.this, "Edited", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();

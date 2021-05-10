@@ -8,7 +8,8 @@
     <ToggleButton
         android:id="@+id/item_alarm_toggle_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:checked="true"/>
 
     <TextView
         android:id="@+id/item_alarm_tv_alarm"
