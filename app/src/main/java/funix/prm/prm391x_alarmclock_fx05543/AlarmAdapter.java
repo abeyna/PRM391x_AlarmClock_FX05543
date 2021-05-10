@@ -25,6 +25,7 @@ public class AlarmAdapter extends BaseAdapter {
     private int layout;
     private List<Alarm> alarmsList;
 
+    private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
 
     public AlarmAdapter(MainActivity context, int layout, List<Alarm> alarmsList) {
@@ -59,7 +60,10 @@ public class AlarmAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder viewHolder;
+        Calendar calendar = Calendar.getInstance();
         Alarm alarm = alarmsList.get(position);
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
 
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -86,16 +90,20 @@ public class AlarmAdapter extends BaseAdapter {
             viewHolder.textAlarm.setText(alarm.getHour() + ":" + alarm.getMinute());
         }
 
-        Intent intent = new Intent(context, AlarmReceiver.class);
-
         viewHolder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
-                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    Toast.makeText(context.getApplicationContext(), "Alarm is ON", Toast.LENGTH_SHORT).show();
-                } else {
+                    calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+                    calendar.set(Calendar.MINUTE, alarm.getMinute());
 
+                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+                    alarm.setSet(true);
+                    Toast.makeText(context.getApplicationContext(), "Alarm is ON " + alarm.getHour() + "." + alarm.getMinute(), Toast.LENGTH_SHORT).show();
+                } else {
+                    alarm.setSet(false);
                     Toast.makeText(context.getApplicationContext(), "Alarm is OFF", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Alarm> mAlarmsList;
     private AlarmAdapter mAlarmAdapter;
 
-    private AlarmManager mAlarmManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +46,6 @@ public class MainActivity extends AppCompatActivity {
         mAlarmsList = new ArrayList<>();
         mAlarmAdapter = new AlarmAdapter(this, R.layout.item_alarm, mAlarmsList);
         mAlarmsListView.setAdapter(mAlarmAdapter);
-
-        mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
     }
 
     @Override
@@ -110,12 +105,6 @@ public class MainActivity extends AppCompatActivity {
         mAlarmAdapter.notifyDataSetChanged();
     }
 
-    public void setAlarm(TimePicker timePicker) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-        calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-
-    }
 
     public void editAlarm(int id) {
         Dialog dialog = new Dialog(this);
