@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         mAlarmsList = new ArrayList<>();
         mAlarmAdapter = new AlarmAdapter(this, R.layout.item_alarm, mAlarmsList);
         mAlarmsListView.setAdapter(mAlarmAdapter);
+        mAlarmDatabase = new AlarmDatabase(this);
     }
 
     @Override

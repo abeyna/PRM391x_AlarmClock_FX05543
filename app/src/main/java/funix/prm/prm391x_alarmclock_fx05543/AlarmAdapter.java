@@ -2,8 +2,10 @@ package funix.prm.prm391x_alarmclock_fx05543;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +15,11 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,9 +29,6 @@ public class AlarmAdapter extends BaseAdapter {
     private MainActivity context;
     private int layout;
     private List<Alarm> alarmsList;
-
-    private AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
 
     public AlarmAdapter(MainActivity context, int layout, List<Alarm> alarmsList) {
         this.context = context;
@@ -60,9 +62,7 @@ public class AlarmAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder viewHolder;
-        Calendar calendar = Calendar.getInstance();
         Alarm alarm = alarmsList.get(position);
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
 
         if (convertView == null) {
@@ -91,19 +91,25 @@ public class AlarmAdapter extends BaseAdapter {
         }
 
         viewHolder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
-                    calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-                    calendar.set(Calendar.MINUTE, alarm.getMinute());
+                    int hourOfDay = alarm.getHour();
+                    int minute = alarm.getMinute();
 
-                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-
+                    Calendar c = Calendar.getInstance();
+                    c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    c.set(Calendar.MINUTE, minute);
+                    c.set(Calendar.SECOND, 0);
                     alarm.setSet(true);
+                    startAlarm(c);
+
                     Toast.makeText(context.getApplicationContext(), "Alarm is ON " + alarm.getHour() + "." + alarm.getMinute(), Toast.LENGTH_SHORT).show();
                 } else {
                     alarm.setSet(false);
+                    cancelAlarm();
+
                     Toast.makeText(context.getApplicationContext(), "Alarm is OFF", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -124,5 +130,23 @@ public class AlarmAdapter extends BaseAdapter {
         });
 
         return convertView;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void startAlarm(Calendar c) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        if (c.before(Calendar.getInstance())) {
+            c.add(Calendar.DATE, 1);
+        }
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+    }
+
+    private void cancelAlarm() {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        alarmManager.cancel(pendingIntent);
     }
 }
