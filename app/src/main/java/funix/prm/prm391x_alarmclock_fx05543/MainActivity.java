@@ -31,10 +31,22 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+/**
+ * @author Luan.Nguyen
+ * @since May 14th 2021
+ *                      Main Activity for running
+ */
 public class MainActivity extends AppCompatActivity {
+    /** A database store all alarms. */
     private AlarmDatabase mAlarmDatabase;
+
+    /** ListView to display all alarms. */
     private ListView mAlarmsListView;
+
+    /** An array for all alarms. */
     private ArrayList<Alarm> mAlarmsList;
+
+    /** An adapter for alarm list. */
     private AlarmAdapter mAlarmAdapter;
 
     @Override
@@ -63,13 +75,23 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Add alarm to database after setting it on TimePicker from dialog.
+     */
     private void addAlarmDialog() {
+        /** Dialog show TimePicker for setting alarm. */
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_time_picker);
 
-        Calendar calendar = Calendar.getInstance();
+        /** TimePicker for alarm setting. */
         TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.dialog_add_time_picker);
+
+        /** Button active after finish alarm choice. */
         Button btnAddAlarm = (Button) dialog.findViewById(R.id.dialog_add_btn_add);
+
+        /** Taking time zone and default locale. */
+        Calendar calendar = Calendar.getInstance();
+
         btnAddAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     *
+     */
     private void getAlarmData() {
         Cursor cursor = mAlarmDatabase.getData("SELECT * FROM Alarm");
         mAlarmsList.clear();
