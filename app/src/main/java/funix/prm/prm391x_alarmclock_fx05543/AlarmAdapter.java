@@ -63,7 +63,9 @@ public class AlarmAdapter extends BaseAdapter {
 
         ViewHolder viewHolder;
         Alarm alarm = alarmsList.get(position);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
 
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -103,12 +105,16 @@ public class AlarmAdapter extends BaseAdapter {
                     c.set(Calendar.MINUTE, minute);
                     c.set(Calendar.SECOND, 0);
                     alarm.setSet(true);
-                    startAlarm(c);
 
-                    Toast.makeText(context.getApplicationContext(), "Alarm is ON " + alarm.getHour() + "." + alarm.getMinute(), Toast.LENGTH_SHORT).show();
+                    if (c.before(Calendar.getInstance())) {
+                        c.add(Calendar.DATE, 1);
+                    }
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+
+                    Toast.makeText(context.getApplicationContext(), "Alarm is ON " + alarm.getHour() + " : " + alarm.getMinute(), Toast.LENGTH_SHORT).show();
                 } else {
                     alarm.setSet(false);
-                    cancelAlarm();
+                    alarmManager.cancel(pendingIntent);
 
                     Toast.makeText(context.getApplicationContext(), "Alarm is OFF", Toast.LENGTH_SHORT).show();
                 }
@@ -130,23 +136,5 @@ public class AlarmAdapter extends BaseAdapter {
         });
 
         return convertView;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void startAlarm(Calendar c) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
-        if (c.before(Calendar.getInstance())) {
-            c.add(Calendar.DATE, 1);
-        }
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-    }
-
-    private void cancelAlarm() {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
-        alarmManager.cancel(pendingIntent);
     }
 }
