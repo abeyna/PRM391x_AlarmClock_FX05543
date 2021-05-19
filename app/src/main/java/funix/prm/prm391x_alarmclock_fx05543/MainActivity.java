@@ -118,9 +118,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Create alarm and save it to database
      */
     private void getAlarmData() {
+        /** Create cursor for selecting alarm in database. */
         Cursor cursor = mAlarmDatabase.getData("SELECT * FROM Alarm");
         mAlarmsList.clear();
         while (cursor.moveToNext()) {
@@ -132,8 +133,13 @@ public class MainActivity extends AppCompatActivity {
         mAlarmAdapter.notifyDataSetChanged();
     }
 
-
+    /**
+     * Edit alarm and save it to database
+     * @param id
+     *          Choose an alarm which will be edited
+     */
     public void editAlarm(int id) {
+        /** Create dialog to show TimePicker for editing. */
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_edit_time_picker);
         dialog.show();
@@ -158,6 +164,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Remove alarm
+     * @param id
+     *          Choose an alarm which will be removed.
+     */
     public void removeAlarm(int id) {
         AlertDialog.Builder removeDialog = new AlertDialog.Builder(this);
         removeDialog.setMessage("Remove this alarm?");
