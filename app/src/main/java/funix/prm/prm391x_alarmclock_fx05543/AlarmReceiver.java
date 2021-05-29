@@ -8,7 +8,9 @@ import android.widget.Toast;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        int alarmStatus = intent.getIntExtra("ALARM_STATUS", 0);
         Intent myIntent = new Intent(context, RingtoneService.class);
+        myIntent.putExtra("ALARM_STATUS", alarmStatus);
         context.startService(myIntent);
 
         Toast.makeText(context.getApplicationContext(), "Alarm is ringing", Toast.LENGTH_SHORT).show();
