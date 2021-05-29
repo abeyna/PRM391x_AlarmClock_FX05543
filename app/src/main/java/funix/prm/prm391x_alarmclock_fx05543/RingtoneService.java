@@ -18,15 +18,20 @@ public class RingtoneService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_ALARM_ALERT_URI);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
-        return START_NOT_STICKY;
+        int alarmStatus = intent.getIntExtra("ALARM_STATUS", 0);
+        if (alarmStatus == 1) {
+            mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_ALARM_ALERT_URI);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        } else {
+            if(mediaPlayer != null) mediaPlayer.stop();
+        }
+        return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mediaPlayer.stop();
+        if(mediaPlayer != null) mediaPlayer.stop();
     }
 }

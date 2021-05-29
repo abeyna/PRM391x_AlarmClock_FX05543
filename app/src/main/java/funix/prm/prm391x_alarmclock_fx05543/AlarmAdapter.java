@@ -63,9 +63,6 @@ public class AlarmAdapter extends BaseAdapter {
 
         ViewHolder viewHolder;
         Alarm alarm = alarmsList.get(position);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
 
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -92,10 +89,16 @@ public class AlarmAdapter extends BaseAdapter {
             viewHolder.textAlarm.setText(alarm.getHour() + ":" + alarm.getMinute());
         }
 
+        viewHolder.toggleButton.setChecked(alarm.isSet());
+
         viewHolder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                Intent intent= new Intent(context, AlarmReceiver.class);;
+                PendingIntent pendingIntent;
+
                 if(isChecked) {
                     int hourOfDay = alarm.getHour();
                     int minute = alarm.getMinute();
@@ -104,18 +107,24 @@ public class AlarmAdapter extends BaseAdapter {
                     c.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     c.set(Calendar.MINUTE, minute);
                     c.set(Calendar.SECOND, 0);
-                    alarm.setSet(true);
 
                     if (c.before(Calendar.getInstance())) {
                         c.add(Calendar.DATE, 1);
                     }
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+                    intent.putExtra("ALARM_STATUS", 1);
 
+                    pendingIntent = PendingIntent.getBroadcast(context, alarm.getId(), intent, 0);
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+                    alarm.setSet(true);
                     Toast.makeText(context.getApplicationContext(), "Alarm is ON " + alarm.getHour() + " : " + alarm.getMinute(), Toast.LENGTH_SHORT).show();
                 } else {
-                    alarm.setSet(false);
+                    intent.putExtra("ALARM_STATUS", 0);
+                    pendingIntent = PendingIntent.getBroadcast(context, alarm.getId(), intent, 0);
                     alarmManager.cancel(pendingIntent);
-
+                    if (alarm.isSet() == true) {
+                        context.sendBroadcast(intent);
+                    }
+                    alarm.setSet(false);
                     Toast.makeText(context.getApplicationContext(), "Alarm is OFF", Toast.LENGTH_SHORT).show();
                 }
             }

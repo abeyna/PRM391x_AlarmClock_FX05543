@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
                 int hour = timePicker.getCurrentHour();
                 int minute = timePicker.getCurrentMinute();
-                boolean status = true;
+                boolean status = false;
 
                 mAlarmDatabase = new AlarmDatabase(MainActivity.this);
                 Alarm alarm = new Alarm();
@@ -128,7 +128,10 @@ public class MainActivity extends AppCompatActivity {
             int id = cursor.getInt(0);
             int hour = cursor.getInt(1);
             int minute = cursor.getInt(2);
-            mAlarmsList.add(new Alarm(id, hour, minute, true));
+            int isSet = cursor.getInt(3);
+            boolean status = false;
+            if (isSet == 1) status = true;
+            mAlarmsList.add(new Alarm(id, hour, minute, status));
         }
         mAlarmAdapter.notifyDataSetChanged();
     }
