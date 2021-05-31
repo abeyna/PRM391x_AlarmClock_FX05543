@@ -124,7 +124,7 @@ public class AlarmAdapter extends BaseAdapter {
                     pendingIntent = PendingIntent.getBroadcast(mContext, alarm.getId(), intent, 0);
                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
                     alarm.setSet(true);
-                    Toast.makeText(mContext.getApplicationContext(), "Alarm is ON " + alarm.getHour() + " : " + alarm.getMinute(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext.getApplicationContext(), "Alarm is ON " + alarm.getHour() + ":" + alarm.getMinute(), Toast.LENGTH_SHORT).show();
                 } else {
                     intent.putExtra("ALARM_STATUS", 0);
                     pendingIntent = PendingIntent.getBroadcast(mContext, alarm.getId(), intent, 0);
