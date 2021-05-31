@@ -10,13 +10,31 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * @author Luan.Nguyen
+ * @since May 31st 2021
+ *                      Alarm Database.
+ */
 public class AlarmDatabase extends SQLiteOpenHelper {
+    /** Alarm database name. */
     private static final String DB_NAME = "AlarmDb.sqlite";
+
+    /** Database version. */
     private static final int DB_VERSION = 1;
+
+    /** Database table name. */
     private static final String TABLE_ALARM = "Alarm";
+
+    /** Alarm ID. */
     private static final String ID = "Id";
+
+    /** Alarm hour. */
     private static final String HOUR = "Hour";
+
+    /** Alarm minute. */
     private static final String MINUTE = "Minute";
+
+    /** Alarm status. */
     private static final String IS_SET = "IsSet";
 
     public AlarmDatabase(@Nullable Context context) {
@@ -35,6 +53,11 @@ public class AlarmDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * Add alarm data.
+     * @param alarm
+     *              alarm object.
+     */
     public void addAlarmData(Alarm alarm) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

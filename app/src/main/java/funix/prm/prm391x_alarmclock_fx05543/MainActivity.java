@@ -33,7 +33,7 @@ import java.util.Calendar;
 
 /**
  * @author Luan.Nguyen
- * @since May 14th 2021
+ * @since May 31st 2021
  *                      Main Activity for running
  */
 public class MainActivity extends AppCompatActivity {

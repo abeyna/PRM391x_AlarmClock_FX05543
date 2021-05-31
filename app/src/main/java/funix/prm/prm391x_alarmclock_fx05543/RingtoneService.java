@@ -8,7 +8,13 @@ import android.provider.Settings;
 
 import androidx.annotation.Nullable;
 
+/**
+ * @author Luan.Nguyen
+ * @since May 31st 2021
+ *                      Ringtone service.
+ */
 public class RingtoneService extends Service {
+    /** Media player to control alarm.*/
     MediaPlayer mediaPlayer;
     @Nullable
     @Override

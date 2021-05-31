@@ -25,20 +25,30 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * @author Luan.Nguyen
+ * @since May 31st 2021
+ *                      Alarm adapter for ListView
+ */
 public class AlarmAdapter extends BaseAdapter {
-    private MainActivity context;
-    private int layout;
-    private List<Alarm> alarmsList;
+    /** Main context for receive method from MainActivity. */
+    private MainActivity mContext;
+
+    /** Resource layout. */
+    private int mLayout;
+
+    /** Alarms array list.*/
+    private List<Alarm> mAlarmsList;
 
     public AlarmAdapter(MainActivity context, int layout, List<Alarm> alarmsList) {
-        this.context = context;
-        this.layout = layout;
-        this.alarmsList = alarmsList;
+        this.mContext = context;
+        this.mLayout = layout;
+        this.mAlarmsList = alarmsList;
     }
 
     @Override
     public int getCount() {
-        return alarmsList.size();
+        return mAlarmsList.size();
     }
 
     @Override
@@ -60,14 +70,13 @@ public class AlarmAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         ViewHolder viewHolder;
-        Alarm alarm = alarmsList.get(position);
+        Alarm alarm = mAlarmsList.get(position);
 
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(layout, null);
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(mLayout, null);
 
             viewHolder.itemLayout = (RelativeLayout) convertView.findViewById(R.id.item_alarm_layout);
             viewHolder.toggleButton = (ToggleButton) convertView.findViewById(R.id.item_alarm_toggle_btn);
@@ -79,24 +88,23 @@ public class AlarmAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (alarm.getHour() < 10 && alarm.getMinute() > 10) {
+        if (alarm.getHour() <= 10 && alarm.getMinute() > 10) {
             viewHolder.textAlarm.setText("0" + alarm.getHour() + ":" + alarm.getMinute());
-        } else if (alarm.getHour() > 10 && alarm.getMinute() < 10) {
-            viewHolder.textAlarm.setText(alarm.getHour() + ": 0" + alarm.getMinute());
-        } else if(alarm.getHour() < 10 && alarm.getMinute() < 10) {
-            viewHolder.textAlarm.setText("0" + alarm.getHour() + ": 0" + alarm.getMinute());
+        } else if (alarm.getHour() >= 10 && alarm.getMinute() < 10) {
+            viewHolder.textAlarm.setText(alarm.getHour() + ":0" + alarm.getMinute());
+        } else if(alarm.getHour() <= 10 && alarm.getMinute() < 10) {
+            viewHolder.textAlarm.setText("0" + alarm.getHour() + ":0" + alarm.getMinute());
         } else {
             viewHolder.textAlarm.setText(alarm.getHour() + ":" + alarm.getMinute());
         }
 
         viewHolder.toggleButton.setChecked(alarm.isSet());
-
         viewHolder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                Intent intent= new Intent(context, AlarmReceiver.class);;
+                AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+                Intent intent= new Intent(mContext, AlarmReceiver.class);;
                 PendingIntent pendingIntent;
 
                 if(isChecked) {
@@ -111,21 +119,21 @@ public class AlarmAdapter extends BaseAdapter {
                     if (c.before(Calendar.getInstance())) {
                         c.add(Calendar.DATE, 1);
                     }
-                    intent.putExtra("ALARM_STATUS", 1);
 
-                    pendingIntent = PendingIntent.getBroadcast(context, alarm.getId(), intent, 0);
+                    intent.putExtra("ALARM_STATUS", 1);
+                    pendingIntent = PendingIntent.getBroadcast(mContext, alarm.getId(), intent, 0);
                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
                     alarm.setSet(true);
-                    Toast.makeText(context.getApplicationContext(), "Alarm is ON " + alarm.getHour() + " : " + alarm.getMinute(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext.getApplicationContext(), "Alarm is ON " + alarm.getHour() + " : " + alarm.getMinute(), Toast.LENGTH_SHORT).show();
                 } else {
                     intent.putExtra("ALARM_STATUS", 0);
-                    pendingIntent = PendingIntent.getBroadcast(context, alarm.getId(), intent, 0);
+                    pendingIntent = PendingIntent.getBroadcast(mContext, alarm.getId(), intent, 0);
                     alarmManager.cancel(pendingIntent);
                     if (alarm.isSet() == true) {
-                        context.sendBroadcast(intent);
+                        mContext.sendBroadcast(intent);
                     }
                     alarm.setSet(false);
-                    Toast.makeText(context.getApplicationContext(), "Alarm is OFF", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext.getApplicationContext(), "Alarm is OFF", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -133,14 +141,14 @@ public class AlarmAdapter extends BaseAdapter {
         viewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.removeAlarm(alarm.getId());
+                mContext.removeAlarm(alarm.getId());
             }
         });
 
         viewHolder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.editAlarm(alarm.getId());
+                mContext.editAlarm(alarm.getId());
             }
         });
 

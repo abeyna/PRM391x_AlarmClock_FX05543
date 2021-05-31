@@ -5,6 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+/**
+ * @author Luan.Nguyen
+ * @since May 31st 2021
+ *                      Alarm broadcast receiver.
+ */
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
