@@ -17,5 +17,5 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_add_time_picker"
         android:layout_centerHorizontal="true"
-        android:text="Add"/>
+        android:text="@string/btn_add_alarm"/>
 </RelativeLayout>

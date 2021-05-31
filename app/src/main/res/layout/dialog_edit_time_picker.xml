@@ -15,7 +15,7 @@
         android:id="@+id/dialog_edit_btn_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Confirm"
+        android:text="@string/btn_edit_alarm"
         android:layout_below="@id/dialog_edit_time_picker"
         android:layout_centerHorizontal="true"/>
 </RelativeLayout>

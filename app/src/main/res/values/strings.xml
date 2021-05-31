@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">PRM391x_AlarmClock_FX05543</string>
     <string name="btn_schedule_alarm">Schedule Alarm</string>
+    <string name="btn_add_alarm">Add</string>
+    <string name="btn_edit_alarm">Confirm</string>
 </resources>

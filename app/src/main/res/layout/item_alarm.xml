@@ -15,15 +15,15 @@
         android:id="@+id/item_alarm_tv_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
+        android:textSize="@dimen/alarm_text"
         android:textStyle="bold"
         android:layout_toRightOf="@id/item_alarm_toggle_btn"/>
 
     <ImageView
         android:id="@+id/item_alarm_img_delete"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/item_layout"
+        android:layout_height="@dimen/item_layout"
         android:src="@drawable/btn_delete"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="@dimen/item_margin_top"/>
 </RelativeLayout>

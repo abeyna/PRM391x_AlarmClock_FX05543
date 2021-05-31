@@ -17,7 +17,5 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent myIntent = new Intent(context, RingtoneService.class);
         myIntent.putExtra("ALARM_STATUS", alarmStatus);
         context.startService(myIntent);
-
-        Toast.makeText(context.getApplicationContext(), "Alarm is ringing", Toast.LENGTH_SHORT).show();
     }
 }

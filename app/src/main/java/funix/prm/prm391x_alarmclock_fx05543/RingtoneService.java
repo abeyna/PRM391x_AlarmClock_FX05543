@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -29,6 +30,7 @@ public class RingtoneService extends Service {
             mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_ALARM_ALERT_URI);
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
+            Toast.makeText(getApplicationContext(), "Alarm is ringing", Toast.LENGTH_SHORT).show();
         } else {
             if(mediaPlayer != null) mediaPlayer.stop();
         }
